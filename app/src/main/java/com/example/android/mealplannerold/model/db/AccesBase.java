@@ -7,9 +7,10 @@ import android.util.Log;
 
 import com.example.android.mealplannerold.MainActivity;
 import com.example.android.mealplannerold.controller.Tools;
+import com.example.android.mealplannerold.model.db.RecipeDAO;
 
 /**
- * Created by Elorri on 30/12/2015.
+ * Created by Elorri-user on 13/05/2015.
  */
 public class AccesBase extends SQLiteOpenHelper {
 
@@ -21,27 +22,6 @@ public class AccesBase extends SQLiteOpenHelper {
     // Le nom du fichier qui représente ma base
     protected final static String NAME = "mealplanner.db";
 
-/*    private SQLiteDatabase db;
-    private FoodDAO foodDAO;
-    private FoodQuantityDAO foodQuantityDAO;
-    private RecipeDAO recipeDAO;
-    private IngredientDAO ingredientDAO;
-
-    public FoodDAO getFoodDAO() {
-        return foodDAO;
-    }
-
-    public FoodQuantityDAO getFoodQuantityDAO() {
-        return foodQuantityDAO;
-    }
-
-    public RecipeDAO getRecipeDAO() {
-        return recipeDAO;
-    }
-
-    public IngredientDAO getIngredientDAO() {
-        return ingredientDAO;
-    }*/
 
     public AccesBase(Context context) {
         super(context, NAME, null, VERSION);
@@ -53,18 +33,17 @@ public class AccesBase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.e("MealPlanner", "Je suis dans AccesBase onCreate ");
 
-
-        db.execSQL(FoodDAO.QUERY_CREATION);
-        db.execSQL(FoodQuantityDAO.QUERY_CREATION);
-        db.execSQL(IngredientDAO.QUERY_CREATION);
+        db.execSQL(com.example.android.mealplannerold.model.db.FoodDAO.QUERY_CREATION);
+            db.execSQL(com.example.android.mealplannerold.model.db.FoodQuantityDAO.QUERY_CREATION);
+        db.execSQL(com.example.android.mealplannerold.model.db.IngredientDAO.QUERY_CREATION);
         db.execSQL(RecipeDAO.QUERY_CREATION);
         Log.e("MealPlanner", "All tables created");
 
 
 
-        insert(db, FoodDAO.QUERY_INSERT_WITH_ID, MainActivity.R_RAW_FOODS);
-        insert(db, FoodQuantityDAO.QUERY_INSERT, MainActivity.R_RAW_FOOD_QUANTITY);
-        insert(db, IngredientDAO.QUERY_INSERT, MainActivity.R_RAW_INGREDIENTS);
+        insert(db, com.example.android.mealplannerold.model.db.FoodDAO.QUERY_INSERT_WITH_ID, MainActivity.R_RAW_FOODS);
+        insert(db, com.example.android.mealplannerold.model.db.FoodQuantityDAO.QUERY_INSERT, MainActivity.R_RAW_FOOD_QUANTITY);
+        insert(db, com.example.android.mealplannerold.model.db.IngredientDAO.QUERY_INSERT, MainActivity.R_RAW_INGREDIENTS);
         insert(db, RecipeDAO.QUERY_INSERT, MainActivity.R_RAW_RECIPES);
         Log.e("MealPlanner", "Inserts done");
     }

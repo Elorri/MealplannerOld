@@ -5,15 +5,11 @@ import android.database.Cursor;
 
 import com.example.android.mealplannerold.model.Recipe;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.sql.SQLException;
-
-/**
- * Created by Elorri on 30/12/2015.
- */
-public class RecipeDAO extends DAO {
+public class RecipeDAO extends com.example.android.mealplannerold.model.db.DAO {
     public RecipeDAO(Context context){
         super(context);
     }
@@ -25,12 +21,12 @@ public class RecipeDAO extends DAO {
 
 
     public static String QUERY_CREATION =
-            "CREATE TABLE " + TABLE + "(" + "ID INTEGER PRIMARY KEY, " + "NAME TEXT(200), " + "TAGS TEXT(400), " +
-                    "TYPE TEXT(10), " + "DIRECTIONS TEXT(4000)" + ")";
+        "CREATE TABLE " + TABLE + "(" + "ID INTEGER PRIMARY KEY, " + "NAME TEXT(200), " + "TAGS TEXT(400), " +
+        "TYPE TEXT(10), " + "DIRECTIONS TEXT(4000)" + ")";
 
 
     public  static String QUERY_INSERT =
-            "INSERT INTO " + TABLE + " (ID, NAME, TAGS, TYPE, DIRECTIONS) " + "VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO " + TABLE + " (ID, NAME, TAGS, TYPE, DIRECTIONS) " + "VALUES (?, ?, ?, ?, ?)";
 
 
     private static String QUERY_UPDATE = "UPDATE " + TABLE + " SET NAME=?, DIRECTIONS=?, TAGS=? " + "WHERE ID=?";
@@ -59,7 +55,7 @@ public class RecipeDAO extends DAO {
 
     }
 
-    private static List<Recipe> extract_recipes(Cursor results)  {
+    private List<Recipe> extract_recipes(Cursor results)  {
         List<Recipe> list = new ArrayList<Recipe>();
         while (results.moveToNext()) {
             Integer id = results.getInt(0);
@@ -83,7 +79,7 @@ public class RecipeDAO extends DAO {
 
     void insert(Recipe r) {
         db.execSQL(QUERY_INSERT, new String[] {
-                String.valueOf(r.getId()), r.getName(), r.getTags(), r.getType(), r.getDirections()
+                                 String.valueOf(r.getId()), r.getName(), r.getTags(), r.getType(), r.getDirections()
         });
     }
 

@@ -1,11 +1,13 @@
 package com.example.android.mealplannerold.model;
 
+import com.example.android.mealplannerold.model.db.FoodDAO;
+import com.example.android.mealplannerold.model.db.FoodQuantityDAO;
+import com.example.android.mealplannerold.model.db.IngredientDAO;
+import com.example.android.mealplannerold.model.db.RecipeDAO;
+
 import java.util.Map;
 
-/**
- * Created by Elorri on 30/12/2015.
- */
-public interface Edible<F extends Food> {
+public interface Edible {
 
     void setId(int id);
 
@@ -17,35 +19,30 @@ public interface Edible<F extends Food> {
 
     String getType();
 
+    Double getQuantity();
 
-    int getQuantity();
+    Double getEnergy();
 
-    int getEnergy();
+    Double getCarbs();
 
-    double getCarbs();
+    Double getProteins();
 
-    double getProteins();
-
-    double getFats();
+    Double getFats();
 
     String toString();
 
 
-
-    Map<Edible, Integer> getChildrenFood();
-
-    Map<Recipe, Integer> getRecipes();
-
-    Map<Ingredient, Integer> getIngredients();
+     String getChildrenType() ;
+    Map<? extends Edible, Double> getChildrenFood();
 
 
     void setType(String type);
 
-    void setRecipes(Map<Recipe, Integer> recipes);
+    void setChildrenFood(Map<? extends Edible, Double> childrenFood) ;
 
-    void setIngredients(Map<Ingredient, Integer> ingredients);
+    Double sumChildrenQuantities(Map<? extends Edible, Double> list);
 
+    void fetchAll(Double quantity_child, FoodDAO foodDAO, FoodQuantityDAO foodQuantityDAO, RecipeDAO recipeDAO, IngredientDAO ingredientDAO);
 
-
-    void setChildrenFood(Map<Edible, Integer> childrenFood) ;
+    String toStringFull(Double quantity_child, String message);
 }

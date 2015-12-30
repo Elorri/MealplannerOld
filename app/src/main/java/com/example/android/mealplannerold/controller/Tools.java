@@ -10,12 +10,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
- * Created by Elorri on 30/12/2015.
+ * Created by Elorri-user on 18/05/2015.
  */
 public class Tools {
     private static Tools instance=null;
-    //private MainActivity mainActivity;
-    private Context context;
+//private MainActivity mainActivity;
+private Context context;
 
 /*    public Tools(MainActivity ma)    {
        this.mainActivity=ma;
@@ -30,7 +30,7 @@ public class Tools {
      * @param resourceId located in the directory res and automatically referenced with an int
      * @return a collection where each item is a String representing one line of a the file.
      */
-    public ArrayList<String> loadTextFile(int resourceId) {
+    public  ArrayList<String> loadTextFile(int resourceId) {
         // The InputStream opens the resourceId and sends it to the buffer
         ArrayList<String> listOfLines=new ArrayList<String>();
         //InputStream is = mainActivity.getResources().openRawResource(resourceId);
@@ -61,7 +61,7 @@ public class Tools {
         for(int i=0; i<length; i+=3000)
         {
             if(i+3000<length)
-                Log.e("MealPlanner", s.substring(i, i + 3000));
+                Log.e("MealPlanner", s.substring(i, i+3000));
             else
                 Log.e("MealPlanner", s.substring(i, length));
         }

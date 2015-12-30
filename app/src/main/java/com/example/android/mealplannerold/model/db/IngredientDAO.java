@@ -1,16 +1,16 @@
 package com.example.android.mealplannerold.model.db;
 
+
 import android.content.Context;
 import android.database.Cursor;
 
 import com.example.android.mealplannerold.model.Ingredient;
+import com.example.android.mealplannerold.model.db.DAO;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.SQLException;
-/**
- * Created by Elorri on 30/12/2015.
- */
+
 public class IngredientDAO extends DAO {
     public IngredientDAO(Context context){
         super(context);
@@ -22,17 +22,17 @@ public class IngredientDAO extends DAO {
     private static String TABLE = "INGREDIENTS";
 
     public static String QUERY_CREATION =
-            "CREATE TABLE " + TABLE + "(" + "ID INTEGER PRIMARY KEY, " + "NAME TEXT(200), " +
-                    "TAGS TEXT(400), TYPE TEXT(10), QUANTITY INTEGER, " + "ENERGY INTEGER, " + "CARBS REAL, " + "PROTEINS REAL, " +
-                    "FATS REAL, " + "CHECK (QUANTITY>0))";
+        "CREATE TABLE " + TABLE + "(" + "ID INTEGER PRIMARY KEY, " + "NAME TEXT(200), " +
+        "TAGS TEXT(400), TYPE TEXT(10), QUANTITY INTEGER, " + "ENERGY INTEGER, " + "CARBS REAL, " + "PROTEINS REAL, " +
+        "FATS REAL, " + "CHECK (QUANTITY>0))";
 
 
     public static String QUERY_INSERT =
-            "INSERT INTO " + TABLE + " (ID, NAME, TAGS, TYPE, QUANTITY, ENERGY, CARBS, PROTEINS, FATS) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO " + TABLE + " (ID, NAME, TAGS, TYPE, QUANTITY, ENERGY, CARBS, PROTEINS, FATS) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static String QUERY_UPDATE =
-            "UPDATE " + TABLE + " SET QUANTITY=?, NAME=?, ENERGY=?, CARBS=?, PROTEINS=?, FATS=? " + "WHERE ID=?";
+        "UPDATE " + TABLE + " SET QUANTITY=?, NAME=?, ENERGY=?, CARBS=?, PROTEINS=?, FATS=? " + "WHERE ID=?";
 
     private static String QUERY_DELETE = "DELETE FROM " + TABLE + " u WHERE u.ID = ?";
 
@@ -43,7 +43,7 @@ public class IngredientDAO extends DAO {
 
 
 
-    public List<Ingredient> getAll() throws SQLException {
+    public  List<Ingredient> getAll() throws SQLException {
         Cursor results = db.rawQuery(QUERY_SEARCH_ALL, new String[] { });
         List<Ingredient> list = extract(results);
         return list;
@@ -55,15 +55,15 @@ public class IngredientDAO extends DAO {
         return list.get(0);
     }
 
-    private static List<Ingredient> extract(Cursor results)  {
+    private List<Ingredient> extract(Cursor results)  {
         List<Ingredient> list = new ArrayList<Ingredient>();
         while (results.moveToNext()) {
-            int id = results.getInt(0);
+            Integer id = results.getInt(0);
             String name = results.getString(1);
             String tags = results.getString(2);
             String type = results.getString(3);
-            int quantity = results.getInt(4);
-            int energy = results.getInt(5);
+            double quantity = results.getInt(4);
+            double energy = results.getInt(5);
             double carbs = results.getDouble(6);
             double proteins = results.getDouble(7);
             double fats = results.getDouble(8);
@@ -79,7 +79,7 @@ public class IngredientDAO extends DAO {
     }
 
 
-    void insert(Ingredient i) {
+     void insert(Ingredient i) {
         db.execSQL(QUERY_INSERT, new String[]{
                 String.valueOf(i.getId()), i.getName(), i.getTags(), i.getType(),
                 String.valueOf(i.getQuantity()), String.valueOf(i.getEnergy()),

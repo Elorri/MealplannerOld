@@ -1,17 +1,17 @@
 package com.example.android.mealplannerold.model;
 
-/**
- * Created by Elorri on 30/12/2015.
- */
-public class Ingredient extends Food{
-    private int quantity;
-    private int energy;
-    private double carbs;
-    private double proteins;
-    private double fats;
+import com.example.android.mealplannerold.model.Food;
+import com.example.android.mealplannerold.model.FoodType;
+
+public class Ingredient extends Food {
+    private Double quantity;
+    private Double energy;
+    private Double carbs;
+    private Double proteins;
+    private Double fats;
 
 
-    public Ingredient(int id, String name, String tags,String type, int quantity, int energy, double carbs, double proteins, double fats) {
+    public Ingredient(Integer id, String name, String tags, String type, Double quantity, Double energy, Double carbs, Double proteins, Double fats) {
         super(id, name, tags, type);
         this.quantity = quantity;
         this.energy = energy;
@@ -21,7 +21,12 @@ public class Ingredient extends Food{
         this.proteins = proteins;
         this.fats = fats;
     }
+
     public Ingredient(String name, String tags, int quantity, int energy, double carbs, double proteins, double fats) {
+        this(name, tags, (double)quantity, (double)energy, carbs, proteins, fats);
+    }
+
+    public Ingredient(String name, String tags, Double quantity, Double energy, Double carbs, Double proteins, Double fats) {
         super(name, tags);
         super.setType(FoodType.INGREDIENT.name());
         this.quantity = quantity;
@@ -34,26 +39,35 @@ public class Ingredient extends Food{
     }
 
 
-    public int getQuantity() { return quantity;  }
+    public Double getQuantity() {
+        return quantity;
+    }
 
-    public int getEnergy() {
+    public Double getEnergy() {
         return energy;
     }
 
-    public double getCarbs() {
+    public Double getCarbs() {
         return carbs;
     }
 
-    public double getProteins() {
+    public Double getProteins() {
         return proteins;
     }
 
-    public double getFats() {
+    public Double getFats() {
         return fats;
     }
 
-
-    public String toString() {
-        return "Ingredient - id:" + this.getId() + " - name:" + this.getName() + " - quantity:" + this.getQuantity() + " - energy:" + this.getEnergy() + " - carbs:" + this.getCarbs() + " - proteins:" + this.getProteins() + " - fats:" + this.getFats();
+    public void ajustToQuantity(Double quantity) {
+        this.energy = (this.energy * quantity) / this.quantity;
+        this.carbs = (this.carbs * quantity) / this.quantity;
+        this.proteins = (this.proteins * quantity) / this.quantity;
+        this.fats = (this.fats * quantity) / this.quantity;
+        this.proteins = (this.proteins * quantity) / this.quantity;
+        this.fats = (this.fats * quantity) / this.quantity;
+        this.quantity = quantity;
     }
+
+
 }

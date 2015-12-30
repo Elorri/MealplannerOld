@@ -9,19 +9,20 @@ import com.example.android.mealplannerold.model.FoodType;
 import com.example.android.mealplannerold.model.Ingredient;
 import com.example.android.mealplannerold.model.Recipe;
 import com.example.android.mealplannerold.model.exception.NoFoodChildrenException;
+import com.example.android.mealplannerold.model.db.DAO;
+import com.example.android.mealplannerold.model.db.RecipeDAO;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import java.sql.SQLException;
-
-/**
- * Created by Elorri on 30/12/2015.
- */
 public class FoodDAO extends DAO {
 
-    public FoodDAO(Context context){
+
+
+    public FoodDAO(Context context) {
         super(context);
     }
 
@@ -46,14 +47,11 @@ public class FoodDAO extends DAO {
     private static String QUERY_SEARCH_ALL = "SELECT * FROM " + TABLE;
 
 
-
-
-
     public List<Food> getAllDays() {
         return getAll(FoodType.DAY.name());
     }
 
-    private  List<Food> getAll(String type) {
+    private List<Food> getAll(String type) {
         List<Food> list = new ArrayList<Food>();
         try {
             Cursor results = db.rawQuery(QUERY_SEARCH_BY_TYPE, new String[]{type});
@@ -64,7 +62,7 @@ public class FoodDAO extends DAO {
         return list;
     }
 
-    public  Food getById(int id) {
+    public Food getById(int id) {
         List<Food> list = new ArrayList<Food>();
         try {
             Cursor results = db.rawQuery(QUERY_SEARCH_BY_ID, new String[]{String.valueOf(id)});
@@ -75,7 +73,7 @@ public class FoodDAO extends DAO {
         return list.get(0);
     }
 
-    private static List<Food> extract(Cursor results) throws SQLException {
+    private List<Food> extract(Cursor results) throws SQLException {
         List<Food> list = new ArrayList<Food>();
         while (results.moveToNext()) {
             Integer id = results.getInt(0);
@@ -94,31 +92,29 @@ public class FoodDAO extends DAO {
      *
      * @param food
      */
-    public void add(Food food) {
-         /* try {
-          insert(food);
+    public void add(Food food, com.example.android.mealplannerold.model.db.FoodQuantityDAO foodQuantityDAO, RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
+        try {
+            insert(food);
             int foodId = getIdByName(food.getName(), food.getType());
             food.setId(foodId);
-
             if (food instanceof Ingredient) {
                 Ingredient i = (Ingredient) food;
-                IngredientDAO.insert(i);
+                ingredientDAO.insert(i);
             } else {
                 if (food instanceof Recipe) {
                     Recipe r = (Recipe) food;
-                    RecipeDAO.insert(r);
+                    recipeDAO.insert(r);
                 }
-                addChildrens(food);
-
+                addChildrens(food, foodQuantityDAO);
             }
         } catch (NoFoodChildrenException e) {
             e.printStackTrace();
-        }*/
+        }
 
     }
 
 
-    private  int getIdByName(String name, String type) {
+    private int getIdByName(String name, String type) {
         Cursor results = db.rawQuery(QUERY_SEARCH_ID_BY_NAME_N_TYPE, new String[]{name, type});
         results.moveToNext();
         return results.getInt(0);
@@ -126,41 +122,21 @@ public class FoodDAO extends DAO {
     }
 
 
-    private static <F extends Edible> void addChildrens(Food food) throws NoFoodChildrenException {
-        Map<Edible, Integer> childrenList = food.getChildrenFood();
-        Map<Recipe, Integer> recipes = food.getRecipes();
-        Map<Ingredient, Integer> ingredients = food.getIngredients();
-        if ((food.getType().equals(FoodType.DISH.name())) && (recipes == null))
-            throw new NoFoodChildrenException();
-        if ((food.getType().equals(FoodType.RECIPE.name())) && (ingredients == null))
-            throw new NoFoodChildrenException();
-        if (!(food.getType().equals(FoodType.DISH.name())) && !(food.getType().equals(FoodType.RECIPE.name())) &&
-                (childrenList == null))
+    private static <F extends Edible> void addChildrens(Food food, com.example.android.mealplannerold.model.db.FoodQuantityDAO foodQuantityDAO) throws NoFoodChildrenException {
+        Map<? extends Edible, Double> childrenList = food.getChildrenFood();
+        if (childrenList == null)
             throw new NoFoodChildrenException();
 
+        for (Edible childrenFood : (Set<Edible>) childrenList.keySet()) {
+            Double quantity = childrenList.get(childrenFood);
+            foodQuantityDAO.insert(food.getId(), childrenFood.getId(), quantity);
+        }
 
-  /*      if (food.getType().equals(FoodType.DISH.name())) {
-            for (Recipe recipe : (Set<Recipe>) recipes.keySet()) {
-                int quantity = recipes.get(recipe);
-                FoodQuantityDAO.insert(food.getId(), recipe.getId(), quantity);
-            }
-        }
-        if (food.getType().equals(FoodType.RECIPE.name())) {
-            for (Ingredient ingredient : (Set<Ingredient>) ingredients.keySet()) {
-                int quantity = ingredients.get(ingredient);
-                FoodQuantityDAO.insert(food.getId(), ingredient.getId(), quantity);
-            }
-        }
-        if (!(food.getType().equals(FoodType.DISH.name())) && !(food.getType().equals(FoodType.RECIPE.name()))) {
-            for (Edible childrenFood : (Set<Edible>) childrenList.keySet()) {
-                int quantity = childrenList.get(childrenFood);
-                FoodQuantityDAO.insert(food.getId(), childrenFood.getId(), quantity);
-            }
-        }*/
     }
 
     void insert(Food food) {
         db.execSQL(QUERY_INSERT, new String[]{food.getName(), food.getTags(), food.getType()});
     }
+
 
 }
