@@ -1,7 +1,8 @@
 package com.example.android.mealplannerold.model.db;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.android.mealplannerold.controller.activities.MainActivity;
 
 /**
  * Created by Elorri-user on 20/05/2015.
@@ -9,10 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 public class DAO {
     protected static SQLiteDatabase db = null;
 
-
-    public DAO(Context context) {
+    MainActivity mainActivity;
+    public DAO(MainActivity mainActivity) {
+        this.mainActivity=mainActivity;
         if (db == null) {
-            db = (AccesBase.instance(context)).getWritableDatabase();
+            db = (AccesBase.instance(mainActivity)).getWritableDatabase();
         }
     }
 

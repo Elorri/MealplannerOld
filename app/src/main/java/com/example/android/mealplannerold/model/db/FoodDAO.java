@@ -1,16 +1,14 @@
 package com.example.android.mealplannerold.model.db;
 
-import android.content.Context;
 import android.database.Cursor;
 
+import com.example.android.mealplannerold.controller.activities.MainActivity;
 import com.example.android.mealplannerold.model.Edible;
 import com.example.android.mealplannerold.model.Food;
 import com.example.android.mealplannerold.model.FoodType;
 import com.example.android.mealplannerold.model.Ingredient;
 import com.example.android.mealplannerold.model.Recipe;
 import com.example.android.mealplannerold.model.exception.NoFoodChildrenException;
-import com.example.android.mealplannerold.model.db.DAO;
-import com.example.android.mealplannerold.model.db.RecipeDAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,9 +19,8 @@ import java.util.Set;
 public class FoodDAO extends DAO {
 
 
-
-    public FoodDAO(Context context) {
-        super(context);
+    public FoodDAO(MainActivity mainActivity) {
+        super(mainActivity);
     }
 
     private static String TABLE = "FOOD";
@@ -49,6 +46,19 @@ public class FoodDAO extends DAO {
 
     public List<Food> getAllDays() {
         return getAll(FoodType.DAY.name());
+    }
+
+    public List<Food> getAllDaysFull(double quantity) {
+        List<Food> l = getAll(FoodType.DAY.name());
+        l = getAllFull(l, quantity);
+        return l;
+    }
+
+    private List<Food> getAllFull(List<Food> l, double quantity) {
+        for (Edible food : l) {
+            food.fetchAll(quantity, mainActivity.getFoodDAO(), mainActivity.getFoodQuantityDAO(), mainActivity.getRecipeDAO(), mainActivity.getIngredientDAO());
+        }
+        return l;
     }
 
     private List<Food> getAll(String type) {
@@ -92,7 +102,7 @@ public class FoodDAO extends DAO {
      *
      * @param food
      */
-    public void add(Food food, com.example.android.mealplannerold.model.db.FoodQuantityDAO foodQuantityDAO, RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
+    public void add(Food food, com.example.android.mealplannerold.model.db.FoodQuantityDAO foodQuantityDAO, com.example.android.mealplannerold.model.db.RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
         try {
             insert(food);
             int foodId = getIdByName(food.getName(), food.getType());

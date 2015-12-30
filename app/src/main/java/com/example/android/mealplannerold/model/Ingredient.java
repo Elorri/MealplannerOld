@@ -1,8 +1,5 @@
 package com.example.android.mealplannerold.model;
 
-import com.example.android.mealplannerold.model.Food;
-import com.example.android.mealplannerold.model.FoodType;
-
 public class Ingredient extends Food {
     private Double quantity;
     private Double energy;

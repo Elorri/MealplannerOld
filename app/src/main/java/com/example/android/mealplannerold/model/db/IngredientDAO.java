@@ -1,18 +1,17 @@
 package com.example.android.mealplannerold.model.db;
 
 
-import android.content.Context;
 import android.database.Cursor;
 
+import com.example.android.mealplannerold.controller.activities.MainActivity;
 import com.example.android.mealplannerold.model.Ingredient;
-import com.example.android.mealplannerold.model.db.DAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientDAO extends DAO {
-    public IngredientDAO(Context context){
+    public IngredientDAO(MainActivity context){
         super(context);
     }
 

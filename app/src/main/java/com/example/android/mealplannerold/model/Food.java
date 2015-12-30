@@ -1,5 +1,6 @@
 package com.example.android.mealplannerold.model;
 
+import com.example.android.mealplannerold.controller.interfaces.Item;
 import com.example.android.mealplannerold.model.db.FoodDAO;
 import com.example.android.mealplannerold.model.db.FoodQuantityDAO;
 import com.example.android.mealplannerold.model.db.IngredientDAO;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class Food implements Edible {
+public class Food implements Edible, Item {
     private int id;
     private String name;
     private String tags;
@@ -122,10 +123,18 @@ public class Food implements Edible {
     }
 
 
+
     public String toString() {
-        return getType() + "|" + String.valueOf(getId()) + "|" + getName() + "|quantity:" + getQuantity() + "|energy:" + getEnergy()+ "|carbs:" + getCarbs()+ "|proteins:" + getProteins()+ "|fats:" + getFats() + "|" + getTags();
+        return toStringTypeTitleId() + " - "+toStringOthers();
     }
 
+    public String toStringTypeTitleId() {
+        return getType() + " - " + String.valueOf(getId()) + " - " + getName();
+    }
+
+    public String toStringOthers(){
+        return "quantity:" + Math.ceil(getQuantity()) + " - energy:" + Math.ceil(getEnergy()) + " - carbs:" + Math.ceil(getCarbs()) + " - proteins:" + Math.ceil(getProteins()) + " - fats:" + Math.ceil(getFats()) + " - " + getTags();
+    }
 
     @Override
     public void setId(int id) {
@@ -182,6 +191,26 @@ public class Food implements Edible {
             message = foodChildren.toStringFull(quantity_child, message);
         }
         return message;
+    }
+
+
+    @Override
+    public int getIconId() {
+        return 0;
+    }
+
+    @Override
+    public String getTitle() {
+        return getName();
+    }
+
+    @Override
+    public String getShortDesc() {
+        String desc=toStringOthers();
+        if (desc.length() > 100)
+            return desc.substring(0, 100) + "...";
+        else
+            return desc;
     }
 
 

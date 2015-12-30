@@ -1,4 +1,4 @@
-package com.example.android.mealplannerold.controller;
+package com.example.android.mealplannerold.controller.extra;
 
 import android.content.Context;
 import android.util.Log;

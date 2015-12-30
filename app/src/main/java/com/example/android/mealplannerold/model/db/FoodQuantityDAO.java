@@ -1,23 +1,20 @@
 package com.example.android.mealplannerold.model.db;
 
-import android.content.Context;
 import android.database.Cursor;
 
+import com.example.android.mealplannerold.controller.activities.MainActivity;
 import com.example.android.mealplannerold.model.Edible;
 import com.example.android.mealplannerold.model.Food;
 import com.example.android.mealplannerold.model.FoodType;
 import com.example.android.mealplannerold.model.Ingredient;
 import com.example.android.mealplannerold.model.Recipe;
-import com.example.android.mealplannerold.model.db.DAO;
-import com.example.android.mealplannerold.model.db.FoodDAO;
-import com.example.android.mealplannerold.model.db.RecipeDAO;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class FoodQuantityDAO extends DAO {
 
-    public FoodQuantityDAO(Context context) {
+    public FoodQuantityDAO(MainActivity context) {
         super(context);
     }
 
@@ -44,17 +41,17 @@ public class FoodQuantityDAO extends DAO {
     private static String QUERY_SEARCH_ALL = "SELECT * FROM " + TABLE;
 
 
-    public void fetchChildrenFood(Edible parentFood, FoodDAO foodDAO, RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
+    public void fetchChildrenFood(Edible parentFood, FoodDAO foodDAO, com.example.android.mealplannerold.model.db.RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
         fetchChildrenFood(parentFood, null, foodDAO, recipeDAO, ingredientDAO);
     }
 
 
-    public void fetchChildrenFood(Edible parentFood, Double quantity, FoodDAO foodDAO, RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
+    public void fetchChildrenFood(Edible parentFood, Double quantity, FoodDAO foodDAO, com.example.android.mealplannerold.model.db.RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
         parentFood.setChildrenFood(getChildrenFood(parentFood, quantity, foodDAO, recipeDAO, ingredientDAO));
     }
 
 
-    private Map<? extends Edible, Double> getChildrenFood(Edible parentFood, Double quantity, FoodDAO foodDAO, RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
+    private Map<? extends Edible, Double> getChildrenFood(Edible parentFood, Double quantity, FoodDAO foodDAO, com.example.android.mealplannerold.model.db.RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
         Map<? extends Edible, Double> list;
         Cursor results = db.rawQuery(QUERY_SEARCH_FOOD_CHILDREN_BY_FOOD_PARENT, new String[]{
                 String.valueOf(parentFood.getId())});
@@ -69,7 +66,7 @@ public class FoodQuantityDAO extends DAO {
     }
 
 
-    private Map<Edible, Double> extract(Cursor results, String childrenType, FoodDAO foodDAO, RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
+    private Map<Edible, Double> extract(Cursor results, String childrenType, FoodDAO foodDAO, com.example.android.mealplannerold.model.db.RecipeDAO recipeDAO, com.example.android.mealplannerold.model.db.IngredientDAO ingredientDAO) {
         Map<Edible, Double> list = new HashMap<Edible, Double>();
         while (results.moveToNext()) {
             Integer id = results.getInt(0);
