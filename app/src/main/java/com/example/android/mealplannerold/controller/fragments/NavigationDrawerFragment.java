@@ -73,6 +73,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
 
     public void setUp(DrawerLayout drawerLayout, Toolbar toolbar) {
+        try{
         this.mDrawerLayout = drawerLayout;
         this.mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View v) {
@@ -85,8 +86,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                 getActivity().invalidateOptionsMenu();
             }
         };
+        mDrawerToggle.setDrawerIndicatorEnabled(false);//To disable and hide the DrawerToggle "Hamburger"
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
 
         //Car la methode syncState() doit normalement etre dans le onPostCreate de l'activit�. Comme onPostCreate n'existe pas pour un fragment on cr�e un thread.
         mDrawerLayout.post(new Runnable() {
@@ -95,6 +96,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                 mDrawerToggle.syncState();
             }
         });
-
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+        }
     }
 }

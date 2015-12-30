@@ -5,43 +5,54 @@ package com.example.android.mealplannerold.controller.adapters;
  */
 
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.example.android.mealplannerold.R;
-import com.example.android.mealplannerold.controller.interfaces.Item;
+import com.example.android.mealplannerold.controller.activities.MainActivity;
 
+import com.example.android.mealplannerold.controller.interfaces.AppItemAdapterClickListenerInterface;
+import com.example.android.mealplannerold.controller.interfaces.Item;
+import com.example.android.mealplannerold.controller.holders.AppItemAdapterHolder;
 import java.util.Collections;
 import java.util.List;
 
 
-public class AppItemAdapter extends RecyclerView.Adapter<AppItemAdapter.MyViewHolder> {
-    private Context context;
+public class AppItemAdapter extends RecyclerView.Adapter<AppItemAdapterHolder> {
+    private MainActivity activity;
     private LayoutInflater inflater;
     private List<Item> data = Collections.emptyList();
-    private ClickListener clickListener;
+    private AppItemAdapterClickListenerInterface appItemAdapterClickListenerInterface;
 
-    public AppItemAdapter(Context context, List<Item> data, ClickListener clickListener) {
+    public static final int SELECTION_MODE_SINGLE = 1;
+    public int selectionMode;
+    private AppItemAdapterHolder currentSelectedItemViewHolder = null;
+
+
+    public AppItemAdapterHolder getCurrentSelectedItemViewHolder() {
+        return currentSelectedItemViewHolder;
+    }
+
+    public AppItemAdapter(MainActivity context, List<Item> data, AppItemAdapterClickListenerInterface appItemAdapterClickListenerInterface, int selectionMode) {
+
         try {
-            this.context = context;
+            this.activity = context;
             this.inflater = LayoutInflater.from(context);
             this.data = data;
-            this.clickListener = clickListener;
+            this.appItemAdapterClickListenerInterface = appItemAdapterClickListenerInterface;
+            this.selectionMode = selectionMode;
         } catch (Exception e) {
             Log.e("MealPlanner", Log.getStackTraceString(e));
         }
     }
 
 
-    public void setListData(List<Item> data){
-        this.data=data;
+    public void setListData(List<Item> data) {
+        this.data = data;
         notifyItemRangeChanged(0, data.size());
     }
 
@@ -61,47 +72,47 @@ public class AppItemAdapter extends RecyclerView.Adapter<AppItemAdapter.MyViewHo
         data.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
     }
-    public void animateTo(List<Item> models) {
-        applyAndAnimateRemovals(models);
-        applyAndAnimateAdditions(models);
-        applyAndAnimateMovedItems(models);
-    }
 
-    private void applyAndAnimateRemovals(List<Item> newModels) {
-        for (int i = data.size() - 1; i >= 0; i--) {
-            final Item model = data.get(i);
-            if (!newModels.contains(model)) {
-                removeItem(i);
-            }
-        }
-    }
+//    public void animateTo(List<Item> models) {
+//        applyAndAnimateRemovals(models);
+//        applyAndAnimateAdditions(models);
+//        applyAndAnimateMovedItems(models);
+//    }
 
-    private void applyAndAnimateAdditions(List<Item> newModels) {
-        for (int i = 0, count = newModels.size(); i < count; i++) {
-            final Item model = newModels.get(i);
-            if (!data.contains(model)) {
-                addItem(i, model);
-            }
-        }
-    }
-
-    private void applyAndAnimateMovedItems(List<Item> newModels) {
-        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
-            final Item model = newModels.get(toPosition);
-            final int fromPosition = data.indexOf(model);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
-            }
-        }
-    }
-
+//    private void applyAndAnimateRemovals(List<Item> newModels) {
+//        for (int i = data.size() - 1; i >= 0; i--) {
+//            final Item model = data.get(i);
+//            if (!newModels.contains(model)) {
+//                removeItem(i);
+//            }
+//        }
+//    }
+//
+//    private void applyAndAnimateAdditions(List<Item> newModels) {
+//        for (int i = 0, count = newModels.size(); i < count; i++) {
+//            final Item model = newModels.get(i);
+//            if (!data.contains(model)) {
+//                addItem(i, model);
+//            }
+//        }
+//    }
+//
+//    private void applyAndAnimateMovedItems(List<Item> newModels) {
+//        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
+//            final Item model = newModels.get(toPosition);
+//            final int fromPosition = data.indexOf(model);
+//            if (fromPosition >= 0 && fromPosition != toPosition) {
+//                moveItem(fromPosition, toPosition);
+//            }
+//        }
+//    }
 
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public AppItemAdapterHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         try {
             View view = inflater.inflate(R.layout.holder_row_app_layout, viewGroup, false);
-            MyViewHolder holder = new MyViewHolder(view);
+            AppItemAdapterHolder holder = new AppItemAdapterHolder(view, this, activity, appItemAdapterClickListenerInterface);
             return holder;
         } catch (Exception e) {
             Log.e("MealPlanner", Log.getStackTraceString(e));
@@ -110,12 +121,13 @@ public class AppItemAdapter extends RecyclerView.Adapter<AppItemAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder viewHolder, int i) {
+    public void onBindViewHolder(AppItemAdapterHolder viewHolder, int i) {
         try {
             Item current = data.get(i);
-            viewHolder.icon.setImageResource(current.getIconId());
-            viewHolder.title.setText(current.getTitle());
-            viewHolder.desc.setText(current.getShortDesc());
+            viewHolder.getIcon().setImageResource(current.getIconId());
+            viewHolder.getIcon_letter().setText(current.getIconLetter());
+            viewHolder.getTitle().setText(current.getTitle());
+            viewHolder.getDesc().setText(current.getShortDesc());
         } catch (Exception e) {
             Log.e("MealPlanner", Log.getStackTraceString(e));
         }
@@ -138,44 +150,37 @@ public class AppItemAdapter extends RecyclerView.Adapter<AppItemAdapter.MyViewHo
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView icon;
-        TextView title;
-        TextView desc;
 
 
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            try {
-                icon = (ImageView) itemView.findViewById(R.id.row_icon);
-                title = (TextView) itemView.findViewById(R.id.row_title);
-                desc = (TextView) itemView.findViewById(R.id.row_desc);
-
-                icon.setOnClickListener(this);
-                title.setOnClickListener(this);
-                desc.setOnClickListener(this);
-            } catch (Exception e) {
-                Log.e("MealPlanner", Log.getStackTraceString(e));
+    public void notifyItemHolderSelected(AppItemAdapterHolder holder) {
+        if (selectionMode == AppItemAdapter.SELECTION_MODE_SINGLE) {
+            if (currentSelectedItemViewHolder == null) {
+                //Log.d("MealPlanner", "1 currentSelectedItemViewHolder :" + currentSelectedItemViewHolder + " holder :" + holder + " holder.isSelected :" + holder.isSelected);
+                //aucune ligne n'est selectionn�e  laisser le toggle se faire normalement
+                currentSelectedItemViewHolder = holder;
+                return;
             }
+            if (holder.equals(currentSelectedItemViewHolder) && (holder.isSelected())) {
+                //il reselectionne la m�me ligne, apres le toggle la ligne sera deselectionn�e
+                //Log.d("MealPlanner", "2 currentSelectedItemViewHolder :" + currentSelectedItemViewHolder + " holder :" + holder + " holder.isSelected :" + holder.isSelected);
+                currentSelectedItemViewHolder = null;
+                return;
+            }
+            if (holder.equals(currentSelectedItemViewHolder) && !(holder.isSelected())) {
+                //il reselectionne la m�me ligne, apres le toggle la ligne sera selectionn�e
+                //Log.d("MealPlanner", "3 currentSelectedItemViewHolder :" + currentSelectedItemViewHolder + " holder :" + holder + " holder.isSelected :" + holder.isSelected);
+                currentSelectedItemViewHolder = holder;
+                return;
+            }
+            //il faut faire le toggle sur la ligne precedement selectionn�e, puis faire le toggle normalement sur la ligne courante
+            //Log.d("MealPlanner", "4 currentSelectedItemViewHolder :" + currentSelectedItemViewHolder + " holder :" + holder + " holder.isSelected :" + holder.isSelected());
+            currentSelectedItemViewHolder.toggleSelect();
+            currentSelectedItemViewHolder = holder;
         }
 
 
-        @Override
-        public void onClick(View v) {
-            try {
-                Toast.makeText(context, "You selected item " + getPosition(), Toast.LENGTH_SHORT).show();
-                //Avoid the below line. Only Activities or Fragments should starts others Activities. Not Adaptaters...  Use interface ClickListener instead.
-                //context.startActivity(new Intent(context, ActivitySub.class));
-                clickListener.itemClicked(v, getPosition());
-            } catch (Exception e) {
-                Log.e("MealPlanner", Log.getStackTraceString(e));
-            }
-        }
     }
 
-    public interface ClickListener {
-        void itemClicked(View view, int position);
 
-    }
 }
 

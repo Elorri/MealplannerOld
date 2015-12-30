@@ -22,6 +22,11 @@ public class Eater implements Item {
     }
 
     @Override
+    public String getIconLetter() {
+        return name.substring(0,1);
+    }
+
+    @Override
     public String getTitle() {
         return name;
     }

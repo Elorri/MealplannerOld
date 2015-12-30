@@ -9,6 +9,7 @@ import com.example.android.mealplannerold.model.FoodType;
 import com.example.android.mealplannerold.model.Ingredient;
 import com.example.android.mealplannerold.model.Recipe;
 import com.example.android.mealplannerold.model.exception.NoFoodChildrenException;
+import com.example.android.mealplannerold.model.db.DAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

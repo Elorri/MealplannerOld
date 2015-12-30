@@ -18,9 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuInflater;
+import android.widget.TextView;
 
 import com.example.android.mealplannerold.R;
+import com.example.android.mealplannerold.controller.activities.MainActivity;
 import com.example.android.mealplannerold.controller.adapters.AppItemAdapter;
+import com.example.android.mealplannerold.controller.interfaces.AppItemAdapterClickListenerInterface;
 import com.example.android.mealplannerold.controller.interfaces.Item;
 
 import java.io.Serializable;
@@ -32,7 +35,7 @@ import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListFragment extends Fragment implements AppItemAdapter.ClickListener {
+public class ListFragment extends Fragment implements AppItemAdapterClickListenerInterface {
     List<Item> dataList;
 
 
@@ -47,6 +50,9 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
     MenuItem edit;
     MenuItem delete;
     MenuItem shopping_list;
+
+    private SearchView searchView;
+
 
     public static ListFragment getInstance(StateAndBehaviour stateAndBehavior) {
         try {
@@ -72,7 +78,6 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
             View layout = inflater.inflate(R.layout.fragment_list_search, container, false);
             mRecyclerView = (RecyclerView) layout.findViewById(R.id.list);
 
-
             return layout;
         } catch (Exception e) {
             Log.e("MealPlanner", Log.getStackTraceString(e));
@@ -88,18 +93,9 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
             super.onViewCreated(view, savedInstanceState);
 
             setHasOptionsMenu(true);
-            appItemAdapter = new AppItemAdapter(getActivity(), dataList, this);
+            appItemAdapter = new AppItemAdapter((MainActivity) getActivity(), dataList, this, AppItemAdapter.SELECTION_MODE_SINGLE);
             mRecyclerView.setAdapter(appItemAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
-//            setHasOptionsMenu(true);
-//            appItemAdapter = new AppItemAdapter(getActivity(), dataList, this);
-//            mRecyclerView.setAdapter(appItemAdapter);
-//            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
-
 
 
         } catch (Exception e) {
@@ -107,13 +103,32 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
         }
 
     }
-
-    private void addFragmentToBackStack() {
-        FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-        //Toast.makeText(getActivity(), "ItemActions added to backstack", Toast.LENGTH_SHORT).show();
-        ft.addToBackStack("ItemActions");
-        ft.commit();
-    }
+//
+//    private void addFragmentToBackStack() {
+//        try {
+//            Log.d("MealPlanner", "in addFragmentToBackStack");
+//            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//            //Toast.makeText(getActivity(), "ItemActions added to backstack", Toast.LENGTH_SHORT).show();
+//            //ft.add(this, "ListFragment"); //Fait planter l'appli sans passer dans le catch
+//            ft.addToBackStack("ListFragment");
+//            ft.commit();
+//        } catch (Exception e) {
+//            Log.e("MealPlanner", Log.getStackTraceString(e));
+//        }
+//    }
+//
+//    private void removeFragmentFromBackStack() {
+//        try {
+//            Log.d("MealPlanner", "in removeFragmentFromBackStack");
+//            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//            //Toast.makeText(getActivity(), "ItemActions added to backstack", Toast.LENGTH_SHORT).show();
+//            getActivity().getSupportFragmentManager().popBackStack();
+////        ft.addToBackStack("ItemActions");
+//            ft.commit();
+//        } catch (Exception e) {
+//            Log.e("MealPlanner", Log.getStackTraceString(e));
+//        }
+//    }
 
 
     @Override
@@ -125,30 +140,50 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
     @Override
     public void itemClicked(View view, int position) {
         try {
-            //Toast.makeText(getActivity(), "item " + position + " has been clicked", Toast.LENGTH_SHORT).show();
-            updateActionBar();
+            if (appItemAdapter.getCurrentSelectedItemViewHolder() == null) {
+                //show home toolbar
+                updateActionBar(true);
+            } else {
+                //show home toolbar if line unselected, actionbar otherwise
+                updateActionBar(!appItemAdapter.getCurrentSelectedItemViewHolder().isSelected());
+            }
 
         } catch (Exception e) {
             Log.e("MealPlanner", Log.getStackTraceString(e));
         }
     }
 
-    private void updateActionBar() {
-
-        toggleShowItemAction();
-        invalidateOptionsMenu(getActivity());
-        ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.accent_pressed)));
-        //actionBar.setTitle("");
-        //addFragmentToBackStack();
+    @Override
+    public void itemDetailClicked(View view, int position) {
+        // Toast.makeText(getActivity(), "itemDetailClicked " +view.toString()+"on position" + position + " has been clicked", Toast.LENGTH_SHORT).show();
     }
 
-    public boolean toggleShowItemAction(){
-        //Toast.makeText(getActivity(), "before toggle showItemActions "+showItemActions, Toast.LENGTH_SHORT).show();
-        showItemActions=!showItemActions;
-        return showItemActions;
+    private void updateActionBar(boolean isHomeEnable) {
+        try {
+            if (isHomeEnable) {
+                showItemActions = false;
+                Log.e("MealPlanner", "1");
+                invalidateOptionsMenu(getActivity());
+                ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+                //actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primaryDark)));
+                actionBar.setTitle(R.string.app_name);
+                //removeFragmentFromBackStack();
+            } else {
+                Log.e("MealPlanner", "2");
+                showItemActions = true;
+                invalidateOptionsMenu(getActivity());
+                ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+                //actionBar.setDisplayHomeAsUpEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(false);
+                actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.accent_pressed)));
+                //actionBar.setTitle("");
+               // addFragmentToBackStack();
+            }
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+        }
     }
 
 
@@ -170,7 +205,7 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         try {
-            inflater.inflate(R.menu.menu_item_search, menu);
+            inflater.inflate(R.menu.menu_main, menu);
             help = menu.findItem(R.id.help);
             action_search = menu.findItem(R.id.action_search);
             analysis = menu.findItem(R.id.analysis);
@@ -178,7 +213,7 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
             delete = menu.findItem(R.id.delete);
             shopping_list = menu.findItem(R.id.shopping_list);
 
-            final SearchView searchView = (SearchView) MenuItemCompat.getActionView(action_search);
+            searchView = (SearchView) MenuItemCompat.getActionView(action_search);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -188,11 +223,18 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
 
                 @Override
                 public boolean onQueryTextChange(String query) {
-                    //Toast.makeText(getActivity(), "text query has changed", Toast.LENGTH_SHORT).show();
-                    final List<Item> filteredModelList = filter(dataList, query);
-                    appItemAdapter.animateTo(filteredModelList);
-                    mRecyclerView.scrollToPosition(0);
-                    return true;
+                    try {
+                        Log.e("MealPlanner", "query is : " + query);
+                        //Toast.makeText(getActivity(), "text query has changed", Toast.LENGTH_SHORT).show();
+                        List<Item> filteredModelList = filter(dataList, query);
+                        appItemAdapter.setListData(filteredModelList);
+                        //appItemAdapter.animateTo(filteredModelList);
+                        mRecyclerView.scrollToPosition(0);
+                        return true;
+                    } catch (Exception e) {
+                        Log.e("MealPlanner", Log.getStackTraceString(e));
+                        return false;
+                    }
                 }
 
                 private List<Item> filter(List<Item> models, String query) {
@@ -220,11 +262,21 @@ public class ListFragment extends Fragment implements AppItemAdapter.ClickListen
         List<T> dataList;
 
         protected StateAndBehaviour(List<T> dataList) {
-            this.dataList=dataList;
+            this.dataList = dataList;
         }
-        public List<T> getDataList(){
+
+        public List<T> getDataList() {
             return dataList;
         }
     }
+
+
+//    public void onBackPressed() {
+//        if (isSearchViewVisible) {
+//            Log.e("MealPlanner", "onBackPressed");
+//            searchView.setQuery("", true);//set the searchView text submit the query (if true)
+//        }
+//    }
+
 
 }

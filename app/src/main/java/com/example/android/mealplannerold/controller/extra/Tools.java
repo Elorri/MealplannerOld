@@ -7,32 +7,34 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
  * Created by Elorri-user on 18/05/2015.
  */
 public class Tools {
-    private static Tools instance=null;
-//private MainActivity mainActivity;
-private Context context;
+    private static Tools instance = null;
+    //private MainActivity mainActivity;
+    private Context context;
 
 /*    public Tools(MainActivity ma)    {
        this.mainActivity=ma;
     }*/
 
-    public Tools(Context context)    {
-        this.context=context;
+    public Tools(Context context) {
+        this.context = context;
     }
 
     /**
      * Load a text file .cvs, .txt, ... and return a collection of its lines.
+     *
      * @param resourceId located in the directory res and automatically referenced with an int
      * @return a collection where each item is a String representing one line of a the file.
      */
-    public  ArrayList<String> loadTextFile(int resourceId) {
+    public ArrayList<String> loadTextFile(int resourceId) {
         // The InputStream opens the resourceId and sends it to the buffer
-        ArrayList<String> listOfLines=new ArrayList<String>();
+        ArrayList<String> listOfLines = new ArrayList<String>();
         //InputStream is = mainActivity.getResources().openRawResource(resourceId);
         InputStream is = context.getResources().openRawResource(resourceId);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -58,10 +60,9 @@ private Context context;
     public static void echo(String s) {
         int length = s.length();
 
-        for(int i=0; i<length; i+=3000)
-        {
-            if(i+3000<length)
-                Log.e("MealPlanner", s.substring(i, i+3000));
+        for (int i = 0; i < length; i += 3000) {
+            if (i + 3000 < length)
+                Log.e("MealPlanner", s.substring(i, i + 3000));
             else
                 Log.e("MealPlanner", s.substring(i, length));
         }
@@ -74,4 +75,9 @@ private Context context;
         }
         return instance;
     }*/
+
+    public static String formatDouble(double d){
+        DecimalFormat decimalFormat=new DecimalFormat("#");
+        return decimalFormat.format(d);
+    }
 }

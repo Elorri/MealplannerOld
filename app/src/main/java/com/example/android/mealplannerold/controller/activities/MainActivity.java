@@ -4,7 +4,7 @@ package com.example.android.mealplannerold.controller.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.support.v4.app.Fragment;
 
 import com.example.android.mealplannerold.R;
 import com.example.android.mealplannerold.controller.adapters.ViewPagerAdapter;
@@ -35,7 +34,9 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 
-public class MainActivity extends ActionBarActivity implements MaterialTabListener, FragmentManager.OnBackStackChangedListener {
+public class MainActivity extends ActionBarActivity implements MaterialTabListener{
+//implements  FragmentManager.OnBackStackChangedListener
+
 
     private FoodDAO foodDAO;
     private FoodQuantityDAO foodQuantityDAO;
@@ -52,10 +53,11 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
     private ListFragment listFragment;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
-            //setContentView(R.layout.activity_main);
 
             this.foodDAO = new FoodDAO(this);
             this.foodQuantityDAO = new FoodQuantityDAO(this);
@@ -85,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
             });
 
 
-            getSupportFragmentManager().addOnBackStackChangedListener(this);
+          //  getSupportFragmentManager().addOnBackStackChangedListener(this);
 
 
             ImageView imageView = (ImageView) getLayoutInflater().inflate(R.layout.floating_action_button, null);
@@ -142,12 +144,13 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         try {
             switch (item.getItemId()) {
 
-                case android.R.id.home: {
-                    listFragment.toggleShowItemAction();
-                    invalidateOptionsMenu();
-                    // NavUtils.navigateUpFromSameTask(this);
-                    break;
-                }
+//                case android.R.id.home: {
+//                    Log.e("MealPlanner", "home button clicked");
+//                    //listFragment.toggleShowItemAction();
+//                    //invalidateOptionsMenu();
+//                    // NavUtils.navigateUpFromSameTask(this);
+//                    break;
+//                }
                 case R.id.help: {
                     Toast.makeText(MainActivity.this, "in help menu ", Toast.LENGTH_SHORT).show();
 //                    startActivity(new Intent(this, ActivitySub.class));
@@ -230,35 +233,45 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
 
 
     public Fragment onChangeTabsFragment(int position) {
-        onTabsChange(position);
-        switch (position) {
+        try {
+            onTabsChange(position);
+            switch (position) {
 
-            case 0: {
-                return tabPeriodSelected();
+                case 0: {
+                    return tabPeriodSelected();
+                }
+                case 1: {
+                    return tabPlanSelected();
+                }
+                case 2: {
+                    return tabDaysSelected();
+                }
+                default:
+                    return null;
             }
-            case 1: {
-                return tabPlanSelected();
-            }
-            case 2: {
-                return tabDaysSelected();
-            }
-            default:
-                return null;
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+            return null;
         }
     }
 
     private Fragment tabDaysSelected() {
-        Double quantity = 1000.0; //quantit� nourriture mang�e par jour
-        List<Food> bigList = foodDAO.getAllDaysFull(quantity);
-        for (int i = 0; i < 5; i++) {
-            bigList.addAll(bigList);
-        }
+        try {
+            Double quantity = 1000.0; //quantit� nourriture mang�e par jour
+            List<Food> bigList = foodDAO.getAllDaysFull(quantity);
+            for (int i = 0; i < 5; i++) {
+                bigList.addAll(bigList);
+            }
 
-        if (bigList.isEmpty()) return EmptyListFragment.getInstance(R.string.days);
-        else {
-            ListFragment.StateAndBehaviour dayList = new DayList(bigList);
-            listFragment = ListFragment.getInstance(dayList);
-            return listFragment;
+            if (bigList.isEmpty()) return EmptyListFragment.getInstance(R.string.days);
+            else {
+                ListFragment.StateAndBehaviour dayList = new DayList(bigList);
+                listFragment = ListFragment.getInstance(dayList);
+                return listFragment;
+            }
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+            return null;
         }
     }
 
@@ -270,18 +283,36 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         return EmptyListFragment.getInstance(R.string.periods);
     }
 
-    @Override
-    public void onBackStackChanged() {
-        Toast.makeText(this, "in onBackStackChanged", Toast.LENGTH_SHORT).show();
-        shouldDisplayHomeUp();
-    }
-
-    public void shouldDisplayHomeUp() {
-        //Enable Up button only  if there are entries in the back stack
-        boolean canGoBack = this.getSupportFragmentManager().getBackStackEntryCount() > 0;
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(canGoBack);
-        //((ActionBarActivity)getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-    }
+//    @Override
+//    public void onBackStackChanged() {
+//        try{
+//        shouldDisplayHomeUp();
+//        } catch (Exception e) {
+//            Log.e("MealPlanner", Log.getStackTraceString(e));
+//        }
+//    }
+//
+//    public void shouldDisplayHomeUp() {
+//        try {
+//            //Affiche backstatck
+//            Log.d("MealPlanner", "in onBackStackChanged");
+//            Log.d("MealPlanner", "getBackStackEntryCount()" + this.getSupportFragmentManager().getBackStackEntryCount());
+//            for (int i = 0; i < this.getSupportFragmentManager().getBackStackEntryCount(); i++) {
+//                Log.d("MealPlanner", "getBackStackEntryCount()" + this.getSupportFragmentManager().getBackStackEntryAt(i));
+//            }
+//
+//
+//            //Enable Up button only  if there are entries in the back stack
+//            boolean canGoBack = this.getSupportFragmentManager().getBackStackEntryCount() > 0;
+//            //this.getSupportActionBar().setDisplayHomeAsUpEnabled(canGoBack);
+//            //this.getSupportActionBar().setHomeButtonEnabled(canGoBack);
+//            //this.getSupportActionBar().setDisplayShowHomeEnabled(!canGoBack);
+//            Log.d("MealPlanner", "canGoBack" + canGoBack);
+//
+//        } catch (Exception e) {
+//            Log.e("MealPlanner", Log.getStackTraceString(e));
+//        }
+//    }
 
 
     public FoodDAO getFoodDAO() {
@@ -300,4 +331,9 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
         return ingredientDAO;
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        Log.d("MealPlanner", "onBackPressed");
+//        listFragment.onBackPressed();
+//    }
 }

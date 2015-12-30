@@ -8,6 +8,8 @@ import com.example.android.mealplannerold.model.Food;
 import com.example.android.mealplannerold.model.FoodType;
 import com.example.android.mealplannerold.model.Ingredient;
 import com.example.android.mealplannerold.model.Recipe;
+import com.example.android.mealplannerold.model.db.DAO;
+import com.example.android.mealplannerold.model.db.FoodDAO;
 
 import java.util.HashMap;
 import java.util.Map;

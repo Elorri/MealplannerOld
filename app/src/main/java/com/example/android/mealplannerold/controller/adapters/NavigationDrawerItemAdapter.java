@@ -2,6 +2,7 @@ package com.example.android.mealplannerold.controller.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,23 +57,36 @@ public class NavigationDrawerItemAdapter extends RecyclerView.Adapter<Navigation
 
         @Override
         public void onClick(View v) {
+            try{
             Toast.makeText(context, "in NavigationDrawerItemAdapter You selected item " + getPosition(), Toast.LENGTH_SHORT).show();
             clickListener.itemClicked(v, getPosition());
+            } catch (Exception e) {
+                Log.e("MealPlanner", Log.getStackTraceString(e));
+            }
         }
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        try{
         View view=inflater.inflate(R.layout.holder_row_navigation_drawer_layout, parent,false);
         MyViewHolder holder=new MyViewHolder(view);
         return holder;
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+            return null;
+        }
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        try{
         Item current=data.get(position);
         holder.title.setText(current.getTitle());
         holder.icon.setImageResource(current.getIconId());
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.android.mealplannerold.controller.fragments;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import  android.support.v4.app.Fragment;
 
 import com.example.android.mealplannerold.R;
 
@@ -44,9 +44,9 @@ public class AppBarFragment extends Fragment {
         try {
             super.onActivityCreated(savedInstanceState);
             ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+            //((ActionBarActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true); //ne sert a rien car �cras� par ce qui est definit dans l'appBar. mDrawerToggle.setDrawerIndicatorEnabled qui est a true par d�faut
 
-            NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+            com.example.android.mealplannerold.controller.fragments.NavigationDrawerFragment drawerFragment = (com.example.android.mealplannerold.controller.fragments.NavigationDrawerFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
             drawerFragment.setUp((DrawerLayout) getActivity().findViewById(R.id.drawer_layout), toolbar);
 
         } catch (Exception e) {

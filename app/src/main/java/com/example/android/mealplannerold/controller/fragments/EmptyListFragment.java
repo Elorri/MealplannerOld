@@ -54,8 +54,12 @@ public class EmptyListFragment extends Fragment {
 
     @Override
     public void onPause() {
+        try{
         super.onPause();
         Log.d("MealPlanner", "EmptyListFragment onPause");
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+        }
     }
 }
 

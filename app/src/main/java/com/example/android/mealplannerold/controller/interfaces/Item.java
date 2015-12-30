@@ -8,6 +8,8 @@ public interface Item {
 
  int getIconId();
 
+ String getIconLetter();
+
  String getTitle();
 
  String getShortDesc();

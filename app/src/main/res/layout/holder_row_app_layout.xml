@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <RelativeLayout
         android:id="@+id/row_icon_layout"
@@ -21,13 +23,13 @@
             android:background="#FF0000" />
 
         <TextView
-            android:id="@+id/row_icon_text"
+            android:id="@+id/row_icon_letter"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:layout_marginLeft="@dimen/icon_left_margin"
             android:layout_marginTop="@dimen/icon_top_margin"
             android:gravity="center"
-            android:text="D"
+            android:text="P"
             android:textColor="#FFFFFF" />
     </RelativeLayout>
 

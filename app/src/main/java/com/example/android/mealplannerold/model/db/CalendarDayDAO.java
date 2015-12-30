@@ -1,20 +1,20 @@
 package com.example.android.mealplannerold.model.db;
 
 
-        import android.database.Cursor;
+import android.database.Cursor;
 
-        import com.example.android.mealplannerold.controller.activities.MainActivity;
-        import com.example.android.mealplannerold.model.CalendarDay;
+import com.example.android.mealplannerold.controller.activities.MainActivity;
+import com.example.android.mealplannerold.model.CalendarDay;
 
-        import java.sql.SQLException;
-        import java.text.DateFormat;
-        import java.text.ParseException;
-        import java.text.SimpleDateFormat;
-        import java.util.ArrayList;
-        import java.util.Date;
-        import java.util.List;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-public class CalendarDayDAO extends DAO {
+public class CalendarDayDAO extends com.example.android.mealplannerold.model.db.DAO {
     public CalendarDayDAO(MainActivity context){
         super(context);
     }

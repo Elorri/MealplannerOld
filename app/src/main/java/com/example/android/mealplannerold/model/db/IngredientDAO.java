@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.example.android.mealplannerold.controller.activities.MainActivity;
 import com.example.android.mealplannerold.model.Ingredient;
+import com.example.android.mealplannerold.model.db.DAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package com.example.android.mealplannerold.model;
 
+import com.example.android.mealplannerold.controller.extra.Tools;
 import com.example.android.mealplannerold.controller.interfaces.Item;
 import com.example.android.mealplannerold.model.db.FoodDAO;
 import com.example.android.mealplannerold.model.db.FoodQuantityDAO;
@@ -133,7 +134,7 @@ public class Food implements Edible, Item {
     }
 
     public String toStringOthers(){
-        return "quantity:" + Math.ceil(getQuantity()) + " - energy:" + Math.ceil(getEnergy()) + " - carbs:" + Math.ceil(getCarbs()) + " - proteins:" + Math.ceil(getProteins()) + " - fats:" + Math.ceil(getFats()) + " - " + getTags();
+        return "quantity:" + Tools.formatDouble(Math.ceil(getQuantity())) + "g - energy:" + Tools.formatDouble(Math.ceil(getEnergy())) + "kcal - carbs:" + Tools.formatDouble(Math.ceil(getCarbs())) + "g - proteins:" + Tools.formatDouble(Math.ceil(getProteins())) + "g - fats:" + Tools.formatDouble(Math.ceil(getFats())) + "g - " + getTags();
     }
 
     @Override
@@ -174,7 +175,7 @@ public class Food implements Edible, Item {
 
 
     /**
-     * Cette methode affiche les infos sur la "food" concernée puis les infos de ces enfants et enfants de ses enfants. Exple pour un dish on aura les infos sur le dish, les recipes dont il est constitué et les ingredients constituant les recipes.
+     * Cette methode affiche les infos sur la "food" concernée puis les infos de ses enfants et enfants de ses enfants. Exple pour un dish on aura les infos sur le dish, les recipes dont il est constitué et les ingredients constituant les recipes.
      * Doit être appelé après un fetchAll pour que getEnergy, getProteins etc puissent s'afficher.
      *
      * @param message
@@ -197,6 +198,11 @@ public class Food implements Edible, Item {
     @Override
     public int getIconId() {
         return 0;
+    }
+
+    @Override
+    public String getIconLetter() {
+        return getType().substring(0,1);
     }
 
     @Override

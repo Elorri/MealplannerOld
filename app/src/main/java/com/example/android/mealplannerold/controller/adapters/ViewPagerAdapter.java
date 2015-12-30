@@ -6,11 +6,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
+import com.example.android.mealplannerold.R;
 import com.example.android.mealplannerold.controller.activities.MainActivity;
+
 import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
-
-import com.example.android.mealplannerold.R;
 
 
 /**
@@ -29,8 +29,13 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        try{
         Log.d("MealPlanner", "in getItem"+position);
         return ((MainActivity)activity).onChangeTabsFragment(position);
+        } catch (Exception e) {
+            Log.e("MealPlanner", Log.getStackTraceString(e));
+            return null;
+        }
     }
 
     @Override
